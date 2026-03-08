@@ -7,3 +7,4 @@ debug_*.txt
 courses_data.json
 debug-*.js
 test-bot.js
+.vercel
