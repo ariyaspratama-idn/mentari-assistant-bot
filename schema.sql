@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS tasks (
     id INT AUTO_INCREMENT PRIMARY KEY,
     course_name VARCHAR(255) NOT NULL,
     task_title VARCHAR(255) NOT NULL,
-    deadline DATETIME NOT NULL,
+    deadline DATETIME NULL,
     task_link TEXT,
     notified BOOLEAN DEFAULT FALSE,
     reminder_h3_sent BOOLEAN DEFAULT FALSE,

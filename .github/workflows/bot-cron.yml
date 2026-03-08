@@ -35,4 +35,5 @@ jobs:
           MENTARI_JWT: ${{ secrets.MENTARI_JWT }}
           CF_CLEARANCE: ${{ secrets.CF_CLEARANCE }}
           SL_SESSION: ${{ secrets.SL_SESSION }}
+          STOKEN: ${{ secrets.STOKEN }}
         run: node bot.js
