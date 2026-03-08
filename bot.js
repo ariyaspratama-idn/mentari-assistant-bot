@@ -76,8 +76,7 @@ async function runBot() {
             if (!alreadyNotified) {
                 await db.saveTask(item);
                 await telegram.sendTelegramMessage(formatNewTaskMessage(item));
-                await db.setTaskNotified(item.id); // Kita butuh ID tapi saveTask tidak return ID di mysql2
-                // Kita perbarui flag notified di database
+                await db.setTaskNotifiedByUnique(item.course_name, item.task_title);
                 newCount++;
             } else {
                 // Pastikan data terbaru tersimpan (update deadline jika berubah)
@@ -113,6 +112,10 @@ async function runBot() {
     } catch (e) {
         console.error('Bot Error:', e.message);
         const source = process.env.GITHUB_ACTIONS ? 'GITHUB' : (process.env.VERCEL ? 'VERCEL' : 'LOKAL');
+
+        // JANGAN kirim error 403 ke Telegram jika dari cloud, biar nggak berisik
+        if (source !== 'LOKAL' && e.message.includes('403')) return;
+
         await telegram.sendTelegramMessage(`❌ [${source}] <b>Bot Error:</b>\n${e.message}`).catch(() => { });
     }
 }
