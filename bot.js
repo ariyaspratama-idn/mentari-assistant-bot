@@ -27,6 +27,14 @@ async function runBot() {
         // 0. Cek masa berlaku JWT token
         await checkTokenExpiry(process.env.MENTARI_JWT, telegram.sendTelegramMessage);
 
+        // 0.b Set token ke lib
+        mentari.setToken(
+            process.env.MENTARI_JWT,
+            process.env.CF_CLEARANCE,
+            process.env.SL_SESSION,
+            process.env.STOKEN
+        );
+
         // 1. Ambil daftar mata kuliah
         const courses = await mentari.getUserCourses();
         if (!courses || courses.length === 0) {
