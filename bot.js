@@ -111,11 +111,11 @@ async function runBot() {
 
     } catch (e) {
         console.error('Bot Error:', e.message);
+
+        // JANGAN kirim error 403 ke Telegram sama sekali (Anti-Berisik)
+        if (e.message.includes('403')) return;
+
         const source = process.env.GITHUB_ACTIONS ? 'GITHUB' : (process.env.VERCEL ? 'VERCEL' : 'LOKAL');
-
-        // JANGAN kirim error 403 ke Telegram jika dari cloud, biar nggak berisik
-        if (source !== 'LOKAL' && e.message.includes('403')) return;
-
         await telegram.sendTelegramMessage(`❌ [${source}] <b>Bot Error:</b>\n${e.message}`).catch(() => { });
     }
 }
