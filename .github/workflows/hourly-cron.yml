@@ -4,6 +4,8 @@ on:
   schedule:
     # Berjalan setiap menit ke-0 setiap jam (sekali setiap jam)
     - cron: '0 * * * *'
+    # Request khusus hari ini (19:00 WIB -> 12:00 UTC & 22:00 WIB -> 15:00 UTC)
+    - cron: '0 12,15 * * *'
   # Memungkinkan untuk dijalankan secara manual dari tab Actions
   workflow_dispatch:
 
