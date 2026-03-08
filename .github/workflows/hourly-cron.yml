@@ -1,0 +1,17 @@
+name: Mentari Bot Hourly Cron
+
+on:
+  schedule:
+    # Berjalan setiap menit ke-0 setiap jam (sekali setiap jam)
+    - cron: '0 * * * *'
+  # Memungkinkan untuk dijalankan secara manual dari tab Actions
+  workflow_dispatch:
+
+jobs:
+  ping-vercel:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Vercel API
+        run: |
+          curl -X GET "https://mentari-assistant-bot.vercel.app/api/cron" \
+          -H "Accept: application/json"
