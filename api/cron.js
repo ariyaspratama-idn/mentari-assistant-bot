@@ -1,24 +1,39 @@
 const { runBot } = require('../bot');
 
 module.exports = async (req, res) => {
-    // Verifikasi request dari Vercel Cron (opsional - bisa dikonfigurasi via CRON_SECRET)
-    const secret = process.env.CRON_SECRET;
-    if (secret && req.headers.authorization !== `Bearer ${secret}`) {
-        return res.status(401).json({ error: 'Unauthorized' });
-    }
+    // Tangkap semua console.log dari runBot
+    const logs = [];
+    const origLog = console.log;
+    const origError = console.error;
+
+    console.log = (...args) => {
+        logs.push('[INFO] ' + args.join(' '));
+        origLog(...args);
+    };
+    console.error = (...args) => {
+        logs.push('[ERR] ' + args.join(' '));
+        origError(...args);
+    };
 
     try {
         await runBot();
+
+        // Kembalikan console.log ke aslinya
+        console.log = origLog;
+        console.error = origError;
+
         res.status(200).json({
             success: true,
-            message: 'Bot selesai dijalankan',
-            timestamp: new Date().toISOString()
+            logs: logs
         });
     } catch (error) {
-        console.error('Cron error:', error);
+        console.log = origLog;
+        console.error = origError;
+
         res.status(500).json({
             success: false,
-            error: error.message
+            error: error.message,
+            logs: logs
         });
     }
 };

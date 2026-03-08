@@ -25,4 +25,4 @@ jobs:
           SL_SESSION: ${{ secrets.SL_SESSION }}
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
-        run: node debug-ping.js
+        run: node debug-kp.js

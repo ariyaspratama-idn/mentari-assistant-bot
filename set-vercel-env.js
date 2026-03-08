@@ -3,10 +3,7 @@ const { execSync } = require('child_process');
 
 const envFile = fs.readFileSync('.env', 'utf-8');
 const lines = envFile.split('\n');
-
 const envList = ['production', 'preview', 'development'];
-
-console.log('--- Setting Vercel Environment Variables ---');
 
 for (let line of lines) {
     line = line.trim();
@@ -18,29 +15,31 @@ for (let line of lines) {
     const key = line.substring(0, splitIdx).trim();
     let val = line.substring(splitIdx + 1).trim();
 
-    // Remove surrounding quotes if any
+    // Hapus kutip jika ada
     if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
         val = val.substring(1, val.length - 1);
     }
 
-    if (!key || val === undefined) continue;
+    console.log(`\n----- Update: ${key} -----`);
 
-    console.log(`Setting ${key}...`);
+    // Tulis val murni ke file untuk piper
+    fs.writeFileSync('.temp_env_val.txt', val, { encoding: 'utf-8' });
 
-    // Remove existing first to avoid prompt conflict
-    try {
-        execSync(`vercel env rm ${key} production preview development -y`, { stdio: 'ignore' });
-    } catch (e) { }
-
-    // Add for each env
     for (const env of envList) {
+        // Hapus variabel lama SETIAP env secara individual (Vercel CLI terbaru butuh satu persatu)
         try {
-            execSync(`echo "${val.replace(/"/g, '\\"')}" | vercel env add ${key} ${env}`, { stdio: 'ignore', shell: true });
-        } catch (err) {
-            console.error(`❌ Failed to set ${key} for ${env}`);
+            execSync(`vercel env rm ${key} ${env} -y`, { stdio: 'ignore', shell: true });
+        } catch (e) { }
+
+        // Tambah variabel baru dengan pipe dari file sementara murni (.txt tanpa tanda petik yang rusak)
+        try {
+            execSync(`vercel env add ${key} ${env} < .temp_env_val.txt`, { stdio: 'ignore', shell: true });
+            console.log(`✅ Sukses (Pipes OK) -> ${env}`);
+        } catch (e) {
+            console.error(`❌ Gagal -> ${env}`);
         }
     }
-    console.log(`✅ ${key} set successfully.\n`);
 }
 
-console.log('--- All Environment Variables Processed ---');
+try { fs.unlinkSync('.temp_env_val.txt'); } catch (e) { }
+console.log('\n✅ Perbaikan Environment berhasil diselesaikan.');
