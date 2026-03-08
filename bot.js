@@ -112,14 +112,16 @@ async function runBot() {
 
     } catch (e) {
         console.error('Bot Error:', e.message);
-        await telegram.sendTelegramMessage(`❌ <b>Bot Error:</b>\n${e.message}`).catch(() => { });
+        const source = process.env.GITHUB_ACTIONS ? 'GITHUB' : (process.env.VERCEL ? 'VERCEL' : 'LOKAL');
+        await telegram.sendTelegramMessage(`❌ [${source}] <b>Bot Error:</b>\n${e.message}`).catch(() => { });
     }
 }
 
 function formatNewTaskMessage(item) {
+    const source = process.env.GITHUB_ACTIONS ? 'GITHUB' : (process.env.VERCEL ? 'VERCEL' : 'LOKAL');
     const icon = item.type === 'forum' ? '💬' : '📝';
     const label = item.type === 'forum' ? 'FORUM BARU' : 'TUGAS BARU';
-    let msg = `${icon} <b>${label}!</b>\n\n`;
+    let msg = `[${source}] ${icon} <b>${label}!</b>\n\n`;
     msg += `📚 <b>${item.course_name}</b>\n`;
     msg += `📌 ${item.task_title}\n`;
     msg += `⏰ DL: ${item.deadline ? dayjs(item.deadline).format('DD/MM HH:mm') : 'Cek Mentari'}\n`;
@@ -129,7 +131,8 @@ function formatNewTaskMessage(item) {
 }
 
 function formatScheduledReportMessage(tasks, hour) {
-    let msg = `📊 <b>LAPORAN RUTIN (${hour}:00 WIB)</b>\n\n`;
+    const source = process.env.GITHUB_ACTIONS ? 'GITHUB' : (process.env.VERCEL ? 'VERCEL' : 'LOKAL');
+    let msg = `[${source}] 📊 <b>LAPORAN RUTIN (${hour}:00 WIB)</b>\n\n`;
 
     if (tasks.length === 0) {
         msg += `✅ Luar biasa! Semua tugas dan forum sudah Anda kerjakan. Tidak ada tanggungan untuk saat ini. ☕`;
