@@ -1,0 +1,7 @@
+node_modules/
+.env
+*.log
+debug_*.html
+debug_*.json
+debug_*.txt
+courses_data.json
