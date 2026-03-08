@@ -1,0 +1,38 @@
+name: Mentari Bot Scraper
+
+on:
+  schedule:
+    - cron: '*/30 * * * *' # Menjalankan setiap 30 menit
+  workflow_dispatch: # Memungkinkan dijalankan manual
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Bot
+        env:
+          # Pastikan Secrets ini diisi di Settings > Secrets and variables > Actions GitHub Anda
+          MENTARI_NIM: ${{ secrets.MENTARI_NIM }}
+          MENTARI_PASSWORD: ${{ secrets.MENTARI_PASSWORD }}
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+          TIDB_HOST: ${{ secrets.TIDB_HOST }}
+          TIDB_PORT: ${{ secrets.TIDB_PORT }}
+          TIDB_USER: ${{ secrets.TIDB_USER }}
+          TIDB_PASSWORD: ${{ secrets.TIDB_PASSWORD }}
+          TIDB_DATABASE: ${{ secrets.TIDB_DATABASE }}
+          MENTARI_JWT: ${{ secrets.MENTARI_JWT }}
+          CF_CLEARANCE: ${{ secrets.CF_CLEARANCE }}
+          SL_SESSION: ${{ secrets.SL_SESSION }}
+        run: node bot.js
