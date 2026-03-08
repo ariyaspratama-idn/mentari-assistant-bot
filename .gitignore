@@ -5,3 +5,5 @@ debug_*.html
 debug_*.json
 debug_*.txt
 courses_data.json
+debug-*.js
+test-bot.js
